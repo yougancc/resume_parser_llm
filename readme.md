@@ -4,7 +4,51 @@ A resume parsing system using local LLM (Qwen2.5-1.5B-Instruct) for extracting s
 
 ## Setup
 
-### 1. Download Local LLM Models
+### 1. Install Python
+
+Ensure Python 3.8 or higher is installed on your system.
+
+Check your Python version:
+
+```bash
+python3 --version
+```
+
+If Python is not installed, download it from https://www.python.org/downloads/ or install via your package manager:
+
+**Ubuntu/Debian:**
+
+```bash
+sudo apt update
+sudo apt install python3 python3-pip python3-venv
+```
+
+**macOS (with Homebrew):**
+
+```bash
+brew install python3
+```
+
+**Windows:**
+Download and install from https://www.python.org/downloads/
+
+### 2. Install Hugging Face CLI
+
+Install the Hugging Face CLI tool:
+
+```bash
+pip install -U "huggingface_hub[cli]"
+```
+
+Login to Hugging Face (optional, but recommended for accessing gated models):
+
+```bash
+hf login
+```
+
+You'll be prompted to enter your Hugging Face token. You can create a token at https://huggingface.co/settings/tokens
+
+### 3. Download Local LLM Models
 
 Download Qwen model:
 
@@ -18,13 +62,13 @@ Download Mistral model:
 hf download TheBloke/Mistral-7B-Instruct-v0.2-GGUF mistral-7b-instruct-v0.2.Q4_K_M.gguf --local-dir models
 ```
 
-### 2. Activate Virtual Environment
+### 4. Activate Virtual Environment
 
 ```bash
 source venv/bin/activate
 ```
 
-### 3. Install Dependencies
+### 5. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
