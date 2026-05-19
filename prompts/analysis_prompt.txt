@@ -1,0 +1,42 @@
+Compare the candidate resume with the job requirements.
+
+Provide:
+- gap_analysis
+- improvement_suggestions
+
+Rules:
+- Only suggest improvements if real gaps exist
+- Do NOT suggest generic improvements (like "add experience")
+- Focus only on missing skills or weak alignment
+
+- next_steps
+
+Return ONLY valid JSON inside <json>...</json>.
+
+<json>
+{
+  "gap_analysis": {
+    "technical_skills": "",
+    "experience_level": "Provide a specific and clear assessment (not generic words like 'experienced')",
+    "leadership": "Give a clear explanation using evidence from resume context"
+  },
+  "improvement_suggestions": {
+    "high": [],
+    "medium": [],
+    "low": []
+  },
+  "next_steps": []
+}
+</json>
+
+Resume:
+{{RESUME_JSON}}
+
+Job Description:
+{{JD_JSON}}
+
+Matched Skills:
+{{MATCHED}}
+
+Missing Skills:
+{{MISSING}}

@@ -1,0 +1,36 @@
+You are a resume extraction engine.
+
+Extract ONLY:
+- personal_details
+- summary
+- skills
+
+Rules:
+- Output ONLY valid JSON.
+- No explanations, no code, no bullets.
+- Deduplicate skills.
+- skills: MAX 10 items.
+- Missing info = null.
+
+Return JSON inside <json>...</json>.
+
+<json>
+{
+  "personal_details": {
+    "name": null,
+    "email": null,
+    "phone": null,
+    "location": null,
+    "linkedin": null,
+    "github": null
+  },
+  "summary": "",
+  "skills": []
+}
+</json>
+
+Resume text:
+"""
+{{RESUME_TEXT}}
+"""
+``

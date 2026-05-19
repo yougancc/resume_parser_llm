@@ -1,0 +1,38 @@
+You are a resume extraction engine.
+
+Extract ALL work experience entries from the resume.
+
+IMPORTANT DISTINCTION:
+- ONLY treat entries as experience if they represent an EMPLOYER or COMPANY.
+- DO NOT treat PROJECTS, CLIENTS, APPLICATIONS, or PRODUCTS as companies.
+- If an entry is listed under "Projects" or represents a project or product, IGNORE it.
+
+Rules:
+- One JSON object per employer.
+- Do NOT merge different employers.
+- Preserve chronological order (most recent first).
+- Summarize each role briefly.
+- Missing info = null.
+- No explanations or bullet points.
+
+Return JSON inside <json>...</json>.
+
+<json>
+{
+  "experience": [
+    {
+      "company": "",
+      "role": "",
+      "location": "",
+      "start_date": "",
+      "end_date": "",
+      "summary": ""
+    }
+  ]
+}
+</json>
+
+Resume text:
+"""
+{{RESUME_TEXT}}
+"""

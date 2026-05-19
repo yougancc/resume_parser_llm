@@ -1,0 +1,34 @@
+You are an ATS job parser.
+
+Extract structured job requirements into 3 categories:
+
+1. technical_skills:
+   - technologies, tools, platforms
+   - examples: API integration, AWS, Java, SQL
+
+2. functional_skills:
+   - role-level competencies
+   - examples: program management, project management, agile delivery
+
+3. responsibilities:
+   - job duties (NOT used for matching)
+
+STRICT RULES:
+- DO NOT include education (degree, MBA)
+- DO NOT include soft skills (communication, ownership)
+- DO NOT mix categories
+
+Return JSON:
+
+<json>
+{
+  "technical_skills": [],
+  "functional_skills": [],
+  "responsibilities": []
+}
+</json>
+
+Job Description:
+"""
+{{JD_TEXT}}
+"""
