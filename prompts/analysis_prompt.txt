@@ -3,22 +3,43 @@ Compare the candidate resume with the job requirements.
 Provide:
 - gap_analysis
 - improvement_suggestions
+- next_steps
 
 Rules:
-- Only suggest improvements if real gaps exist
-- Do NOT suggest generic improvements (like "add experience")
-- Focus only on missing skills or weak alignment
 
-- next_steps
+- Focus on alignment between resume skills and job requirements
+- Identify only genuine gaps or weaknesses
+
+Technical Analysis Rules:
+- Clearly describe how well the candidate matches technical requirements
+- If there are no gaps, explicitly state: "Strong alignment with required technical skills"
+
+Improvement Suggestions Rules:
+- If there are real skill gaps:
+    • Add them under "high" or "medium" priority accordingly
+    • Do NOT include generic suggestions like "add experience"
+- If there are NO real gaps:
+    • Do NOT leave improvement_suggestions empty
+    • Provide 1–3 meaningful low-priority improvements such as:
+        - adding measurable achievements
+        - clarifying impact or ownership
+        - strengthening leadership examples
+    • Ensure suggestions are specific, practical, and professional (not generic)
+
+General Rules:
+- Avoid vague or robotic statements like "no improvement needed"
+- Use clear, professional, human-like phrasing
+- Use only information supported by resume context
+- Do NOT hallucinate missing skills
 
 Return ONLY valid JSON inside <json>...</json>.
 
 <json>
 {
   "gap_analysis": {
-    "technical_skills": "",
-    "experience_level": "Provide a specific and clear assessment (not generic words like 'experienced')",
-    "leadership": "Give a clear explanation using evidence from resume context"
+    "technical_skills": "Provide a clear summary of how strongly the candidate matches the technical requirements",
+    "experience_level": "Provide a specific and evidence-based assessment of experience level",
+    "leadership": "Provide a clear explanation using evidence from resume context"
   },
   "improvement_suggestions": {
     "high": [],
@@ -40,3 +61,4 @@ Matched Skills:
 
 Missing Skills:
 {{MISSING}}
+``
