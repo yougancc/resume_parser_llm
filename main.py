@@ -47,6 +47,7 @@ SKILL_KEYWORDS = [
 @app.post("/resume_parser")
 async def parse_resume(file: UploadFile = File(...)):
 
+    # ✅ Save file
     tmp_path = os.path.join(TMP_DIR, file.filename)
     with open(tmp_path, "wb") as f:
         shutil.copyfileobj(file.file, f)
@@ -54,6 +55,10 @@ async def parse_resume(file: UploadFile = File(...)):
     resume_text = extract_pdf_text(tmp_path)
     os.remove(tmp_path)
 
+    # ✅ LIMIT TEXT SIZE (IMPORTANT)
+    resume_text = resume_text[:6000]
+
+    # ✅ PASS 1 (unchanged)
     try:
         pass1_prompt = PASS1.replace("{{RESUME_TEXT}}", resume_text)
         pass1_json = extract_json(run_llm(pass1_prompt))
@@ -63,48 +68,41 @@ async def parse_resume(file: UploadFile = File(...)):
             detail="Failed to extract personal details / summary / skills"
         )
 
+    # ✅ PASS 2 (LIMIT CHUNKS — CRITICAL FIX)
     experience_results = []
     seen_companies = set()
 
-    chunks = chunk_text(resume_text, max_chars=3000)
+    chunks = chunk_text(resume_text, max_chars=2000)[:2]  # ✅ MAX 2 chunks only
 
     for chunk in chunks:
         try:
-            chunk_json = extract_json(run_llm(PASS2.replace("{{RESUME_TEXT}}", chunk)))
+            chunk_json = extract_json(
+                run_llm(PASS2.replace("{{RESUME_TEXT}}", chunk))
+            )
+
             for exp in chunk_json.get("experience", []):
                 key = exp.get("company", "").strip().lower()
                 if key and key not in seen_companies:
                     seen_companies.add(key)
                     experience_results.append(exp)
+
         except:
             continue
 
+    # ✅ PASS 3 (NO CHUNKS — SINGLE CALL ✅ HUGE SPEED BOOST)
     education_results = []
     certification_results = []
 
-    seen_edu = set()
-    seen_cert = set()
+    try:
+        chunk_json = extract_json(
+            run_llm(PASS3.replace("{{RESUME_TEXT}}", resume_text))
+        )
 
-    for chunk in chunks:
-        try:
-            chunk_json = extract_json(run_llm(PASS3.replace("{{RESUME_TEXT}}", chunk))
+        education_results = chunk_json.get("education", [])
+        certification_results = chunk_json.get("certifications", [])
 
-            )
-
-            for edu in chunk_json.get("education", []):
-                key = str(edu).lower()
-                if key not in seen_edu:
-                    seen_edu.add(key)
-                    education_results.append(edu)
-
-            for cert in chunk_json.get("certifications", []):
-                key = cert.lower()
-                if key not in seen_cert:
-                    seen_cert.add(key)
-                    certification_results.append(cert)
-
-        except:
-            continue
+    except:
+        pass
 
     return {
         "personal_details": pass1_json.get("personal_details"),

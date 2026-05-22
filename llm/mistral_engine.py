@@ -1,31 +1,31 @@
-from llama_cpp import Llama
+import requests
+import time
 
-MODEL_PATH = "models/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
-
-_mistral = None
-
-def get_mistral():
-    global _mistral
-    if _mistral is None:
-        _mistral = Llama(
-            model_path=MODEL_PATH,
-            n_ctx=4096,
-            n_threads=6,
-            temperature=0.2,
-            verbose=False
-        )
-    return _mistral
-
+OLLAMA_URL = "http://localhost:11434/api/generate"
+MODEL = "mistral"
 
 def run_mistral(prompt: str):
-    model = get_mistral()
+    for attempt in range(2):  # ✅ retry once
+        try:
+            response = requests.post(
+                OLLAMA_URL,
+                json={
+                    "model": MODEL,
+                    "prompt": prompt,
+                    "stream": False
+                },
+                timeout=300
+            )
 
-    response = model.create_chat_completion(
-        messages=[
-            {"role": "system", "content": "You are a hiring assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        max_tokens=800
-    )
+            response.raise_for_status()
 
-    return response["choices"][0]["message"]["content"]
+            output = response.json().get("response", "").strip()
+
+            if output:
+                return output
+
+        except Exception as e:
+            print(f"Mistral Error (attempt {attempt+1}):", e)
+            time.sleep(2)
+
+    return "<json>{\"error\": \"llm_failed\"}</json>"

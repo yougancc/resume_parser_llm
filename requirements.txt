@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 pdfplumber
-llama-cpp-python
 pydantic
 python-multipart
 scikit-learn
+requests
