@@ -1,5 +1,6 @@
 import os
 import shutil
+from urllib import response
 from fastapi import FastAPI, UploadFile, File, HTTPException
 
 from extractor.pdf_extractor import extract_pdf_text
@@ -181,3 +182,51 @@ Additional Context:
         "missing_skills": missing,
         **analysis
     }
+
+@app.post("/resume_check")
+async def resume_check(file: UploadFile = File(...)):
+
+    # ✅ Save file
+    tmp_path = os.path.join(TMP_DIR, file.filename)
+    with open(tmp_path, "wb") as f:
+        shutil.copyfileobj(file.file, f)
+
+    resume_text = extract_pdf_text(tmp_path)
+    os.remove(tmp_path)
+
+    # ✅ Limit input size (performance)
+    resume_text = resume_text[:4000]
+
+    try:
+        prompt_template = open("prompts/resume_check_prompt.txt").read()
+
+        final_prompt = prompt_template.replace("{{RESUME_TEXT}}", resume_text)
+
+        # ✅ LLM call
+        response = run_llm(final_prompt)
+
+        if "llm_failed" in response:
+            raise Exception("LLM timeout")
+
+        try:
+            result = extract_json(response)
+        except:
+            raise Exception("Invalid JSON from LLM")
+
+    except Exception as e:
+        print("Resume Check Error:", e)
+
+        # ✅ Safe fallback
+        result = {
+            "overall_score": 50,
+            "fit_label": "Needs Improvement",
+            "role_match": {"role": "Not identified", "score": 50},
+            "key_strengths": [],
+            "missing_skills": [],
+            "areas_for_improvement": [
+                {"title": "Error", "description": "Could not analyze resume"}
+            ],
+            "smart_tip": "Ensure resume is properly formatted."
+        }
+
+    return result
